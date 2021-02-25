@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 3 assignment</title>
+    <style>
+        body {
+        font-family: Arial, sans-serif;
+        }
+
+        h2{
+            text-align: center;
+            
+        }
+        table{
+            width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        th{
+            text-align: center;
+            font-size: small;
+        }
+
+        table,th,td{
+            text-align: center;
+            border: 1px solid #000;
+            border-collapse: collapse;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        th{
+            color: white;
+            background-color: gray;
+            
+        }
+        tr:hover{
+            background-color: #000;
+            color:white
+        }
+        #utilized {
+            color:#cc1b25;
+            font-weight:600;
+            }
+
+        
+       
+    </style>
+
+    <body>
+        <h2>Singapore carpark availability table</h2> 
+        <table id="carparkTable">
+            <tbody id="data">
+                <tr> 
+                    <th>Carpark Number</th>
+                    <th>Timestamp</th>
+                    <th>Lot Type</th>
+                    <th>Total Lots</th>
+                    <th>Lots available</th>
+                    <th>Utilization(%)</th>
+                </tr>
+            </tbody> 
+        </table>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        
+        <script>
+            fetch('https://api.data.gov.sg/v1/transport/carpark-availability')
+            .then(response=>response.json())
+            .then(data=>{
+                let row=''
+                let carpark = data.items[0].carpark_data;
+                let  table = document.getElementById("data")
+                for (let i = 0; i < carpark.length; i++){
+                    let Utilization = Math.round((carpark[i].carpark_info[0].total_lots - carpark[i].carpark_info[0].lots_available) / carpark[i].carpark_info[0].total_lots* 100 * 10)/10
+                    row += '<tr>'; 
+                    row += '<td>' + carpark[i].carpark_number + '</td>'; 
+                    row += '<td>' + carpark[i].update_datetime + '</td>'; 
+                    row += '<td>' + carpark[i].carpark_info[0].lot_type + '</td>'; 
+                    row += '<td>' + carpark[i].carpark_info[0].total_lots + '</td>'; 
+                    row += '<td>' + carpark[i].carpark_info[0].lots_available + '</td>'; 
+              if(Utilization >= 80){
+                   row += '<td id="utilized">' + Utilization + '</td>';
+                } 
+                else {
+                    row += '<td>' + Utilization + '</td>';
+                }
+                row += '</tr>';
+            }; 
+            
+            
+            $('#carparkTable').append(row); 
+                    
+            
+
+            })
+            .catch(error => console.log(error))
+            console.log(data)
+            
+
+            
+
+            
+
+
+
+        
+
+            
+        </script>
+    </body>
+</head>
+<body>
+    
+</body>
